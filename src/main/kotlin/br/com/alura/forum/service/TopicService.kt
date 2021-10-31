@@ -2,6 +2,7 @@ package br.com.alura.forum.service
 
 import br.com.alura.forum.dto.TopicForm
 import br.com.alura.forum.dto.TopicView
+import br.com.alura.forum.dto.UpdateTopicForm
 import br.com.alura.forum.mapper.TopicFormMapper
 import br.com.alura.forum.mapper.TopicViewMapper
 import br.com.alura.forum.model.Topic
@@ -31,5 +32,28 @@ class TopicService(
         val topic = topicFormMapper.map(form)
         topic.id = topics.size.toLong() + 1
         topics = topics.plus(topic)
+    }
+
+    fun update(form: UpdateTopicForm) {
+        val topic = topics.first {
+            it.id == form.id
+        }
+        topics = topics.minus(topic).plus(Topic(
+            id = form.id,
+            title = form.title,
+            message = form.message,
+            author = topic.author,
+            course = topic.course,
+            answers = topic.answers,
+            status = topic.status,
+            creationDate = topic.creationDate
+        ))
+    }
+
+    fun delete(id: Long) {
+        val topic = topics.first {
+            it.id == id
+        }
+        topics = topics.minus(topic)
     }
 }
