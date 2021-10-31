@@ -28,17 +28,18 @@ class TopicService(
         return topicViewMapper.map(topic)
     }
 
-    fun createTopics(form: TopicForm) {
+    fun createTopics(form: TopicForm) : TopicView {
         val topic = topicFormMapper.map(form)
         topic.id = topics.size.toLong() + 1
         topics = topics.plus(topic)
+        return topicViewMapper.map(topic)
     }
 
-    fun update(form: UpdateTopicForm) {
+    fun update(form: UpdateTopicForm) : TopicView {
         val topic = topics.first {
             it.id == form.id
         }
-        topics = topics.minus(topic).plus(Topic(
+        val updatedTopic = Topic(
             id = form.id,
             title = form.title,
             message = form.message,
@@ -47,7 +48,9 @@ class TopicService(
             answers = topic.answers,
             status = topic.status,
             creationDate = topic.creationDate
-        ))
+        )
+        topics = topics.minus(topic).plus(updatedTopic)
+        return topicViewMapper.map(updatedTopic)
     }
 
     fun delete(id: Long) {
